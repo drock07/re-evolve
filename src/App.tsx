@@ -1,18 +1,63 @@
+import { useState } from 'react'
 import { GameContextProvider } from './contexts/GameContext'
+import { useIsMobileBreakpoint } from './hooks'
+
+import ResourcesPane from './components/ResourcesPane'
+import ActionsPane from './components/ActionsPane'
+import MessagesPane from './components/MessagesPane'
+import Header from './components/Header'
+import FooterTab from './components/FooterTab'
+
+import { GiWoodPile, GiFist, GiTalk } from 'react-icons/gi'
+
+const Tabs = {
+  RESOURCES: 'RESOURCES',
+  ACTIONS: 'ACTIONS',
+  MESSAGES: 'MESSAGES',
+}
 
 function App() {
+  const isMobile = useIsMobileBreakpoint()
+  const [currentTab, setCurrentTab] = useState(Tabs.RESOURCES)
   return (
     <GameContextProvider>
-      <div className='grid h-full w-full grid-cols-site-layout grid-rows-site-layout'>
-        <header className='col-span-3 bg-slate-300'>header</header>
+      <div className='grid h-full w-full grid-cols-1  grid-rows-[60px_1fr_60px] md:grid-cols-[100px_1fr_100px]'>
+        <Header />
 
-        <div className='bg-lime-100'>resources</div>
+        {isMobile ? (
+          {
+            [Tabs.RESOURCES]: <ResourcesPane />,
+            [Tabs.ACTIONS]: <ActionsPane />,
+            [Tabs.MESSAGES]: <MessagesPane />,
+          }[currentTab]
+        ) : (
+          <>
+            <ResourcesPane />
+            <ActionsPane />
+            <MessagesPane />
+          </>
+        )}
 
-        <div className='bg-stone-300'>actions</div>
-
-        <div className='bg-emerald-100'>message log</div>
-
-        <footer className='col-span-3 bg-sky-300'>footer</footer>
+        <footer className='flex flex-row flex-nowrap items-center bg-sky-300 md:col-span-3'>
+          <FooterTab
+            icon={<GiWoodPile />}
+            label='Resources'
+            onClick={() => setCurrentTab(Tabs.RESOURCES)}
+            active={currentTab === Tabs.RESOURCES}
+          />
+          <FooterTab
+            icon={<GiFist />}
+            label='Actions'
+            onClick={() => setCurrentTab(Tabs.ACTIONS)}
+            active={currentTab === Tabs.ACTIONS}
+          />
+          <FooterTab
+            icon={<GiTalk />}
+            label='Messages'
+            onClick={() => setCurrentTab(Tabs.MESSAGES)}
+            active={currentTab === Tabs.MESSAGES}
+          />
+        </footer>
       </div>
     </GameContextProvider>
   )
