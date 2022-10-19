@@ -1,9 +1,12 @@
-import "./App.css";
-import { useGame } from "~/hooks";
+import './App.css'
+import { GameContextProvider } from './contexts/GameContext'
 
 function App() {
-  const [{ start, stop }] = useGame();
-  return <div className="App">hello</div>;
+  return (
+    <GameContextProvider>
+      <div className='App'>hello</div>
+    </GameContextProvider>
+  )
 }
 
-export default App;
+export default App

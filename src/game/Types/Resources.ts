@@ -1,16 +1,16 @@
 export interface ResourceState {
-  display: boolean;
+  display: boolean
   // value: number;
-  amount: number;
-  max: number;
+  amount: number
+  max: number
   // diff: number;
   // delta: number;
-  rate: number;
+  rate: number
 
-  stackable: boolean;
-  crates: number;
-  containers: number;
+  // stackable: boolean;
+  // crates: number;
+  // containers: number;
 
-  tradeable: boolean;
-  trade: number;
+  // tradeable: boolean;
+  // trade: number;
 }
