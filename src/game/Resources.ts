@@ -1,3 +1,11 @@
+export default {
+  RNA: 'RNA',
+  DNA: 'DNA',
+  FOOD: 'Food',
+  LUMBER: 'Lumber',
+  STONE: 'Stone',
+} as const
+
 export interface ResourceState {
   display: boolean
   // value: number;
@@ -5,7 +13,7 @@ export interface ResourceState {
   max: number
   // diff: number;
   // delta: number;
-  rate: number
+  // rate: number
 
   // stackable: boolean;
   // crates: number;

@@ -1,21 +1,39 @@
-import { useEffect, useCallback, useMemo, useState } from 'react'
+import { useEffect, useCallback, useMemo, useState, useReducer } from 'react'
 import { useLocalStorage } from 'react-use'
 import LZString from 'lz-string'
-import { Game, GameLoopManager, type GameState } from '~/game'
+import { Game, GameLoopManager, type GameState, type Command } from '~/game'
 
 const game = new Game()
 const gameLoop = new GameLoopManager()
 
-interface MetaMethods {
-  start: () => void
-  stop: () => void
-  importGame: (importString: string) => void
-  exportGame: () => void
+type ACTIONTYPE =
+  | { type: 'short' }
+  | { type: 'mid' }
+  | { type: 'long' }
+  | { type: 'import'; data: GameState }
+  | { type: 'commands'; commands: Command | Command[] }
+
+function reducer(state: GameState, action: ACTIONTYPE): GameState {
+  switch (action.type) {
+    case 'short':
+      return game.fastLoop(state)
+    case 'mid':
+      return game.midLoop(state)
+    case 'long':
+      return game.longLoop(state)
+    case 'import':
+      return action.data
+    case 'commands':
+      return game.executeCommands(
+        state,
+        Array.isArray(action.commands) ? action.commands : [action.commands]
+      )
+    default:
+      return state
+  }
 }
 
-export type useGameReturnValues = [GameState, MetaMethods]
-
-function useGame(): useGameReturnValues {
+function useGame(): [GameState, typeof metaMethods] {
   // const [] = useLocalStorage(
   //   'gameState',
   //   {},
@@ -29,17 +47,17 @@ function useGame(): useGameReturnValues {
   //     },
   //   }
   // )
-  const [gameState, setGameState] = useState<GameState>(game.new())
+  const [gameState, dispatch] = useReducer(reducer, game.new())
 
   useEffect(() => {
     function short() {
-      setGameState((gs) => (gs ? game.fastLoop(gs) : gs))
+      dispatch({ type: 'short' })
     }
     function mid() {
-      setGameState((gs) => (gs ? game.midLoop(gs) : gs))
+      dispatch({ type: 'mid' })
     }
     function long() {
-      setGameState((gs) => (gs ? game.longLoop(gs) : gs))
+      dispatch({ type: 'long' })
     }
 
     gameLoop.subscribe('short', short)
@@ -52,6 +70,10 @@ function useGame(): useGameReturnValues {
       gameLoop.unsubscribe('mid', mid)
       gameLoop.unsubscribe('long', long)
     }
+  }, [])
+
+  const dispatchCommands = useCallback((commands: Command | Command[]) => {
+    dispatch({ type: 'commands', commands })
   }, [])
 
   const start = useCallback(() => {
@@ -70,7 +92,10 @@ function useGame(): useGameReturnValues {
 
     // migrate gameState if previous version
 
-    setGameState(gameState)
+    dispatch({
+      type: 'import',
+      data: gameState,
+    })
   }, [])
 
   const exportGame = useCallback(() => {

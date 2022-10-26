@@ -1,5 +1,21 @@
+import { useGameContext } from '~/contexts/GameContext'
+
 function ResourcesPane() {
-  return <div className='bg-lime-100'>resources</div>
+  const [gameState] = useGameContext()
+  const resources = gameState?.resources
+  return (
+    <div className=''>
+      <h1>Resources</h1>
+      {resources &&
+        Object.entries(resources)
+          .filter(([, resourceState]) => resourceState.display)
+          .map(([resourceName, resourceState]) => (
+            <div key={resourceName}>
+              {resourceName}: {resourceState.amount}
+            </div>
+          ))}
+    </div>
+  )
 }
 
 export default ResourcesPane

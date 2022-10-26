@@ -20,7 +20,7 @@ function FooterTab({
       )}
     >
       <div className='text-3xl'>{icon}</div>
-      {label && <div className='text-sm'>label</div>}
+      {label && <div className='text-sm'>{label}</div>}
     </div>
   )
 }

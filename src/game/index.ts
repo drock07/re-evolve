@@ -1,3 +1,5 @@
 export { default as Game } from './Game'
-export type { GameState } from './Types/GameState'
+export type { GameState } from './GameState'
 export { default as GameLoopManager } from './GameLoopManager'
+export type { Command } from './Commands'
+export { default as Buildings } from './GameBuildings'

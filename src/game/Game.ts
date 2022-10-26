@@ -1,33 +1,69 @@
-import { GameState } from './Types/GameState'
-import Stage from './Types/Stages'
+import { produce } from 'immer'
+import { GameState } from './GameState'
+import Stage from './Stages'
+import ResourceNames from './Resources'
+import { Command } from './Commands'
+
 export default class Game {
   public fastLoop(state: GameState): GameState {
     return state
   }
   public midLoop(state: GameState): GameState {
-    return state
+    return produce(state, (draft) => {
+      if (draft.resources.RNA.amount < draft.resources.RNA.max) {
+        draft.resources.RNA.amount++
+      }
+    })
   }
   public longLoop(state: GameState): GameState {
     return state
+  }
+
+  public executeCommands(state: GameState, commands: Command[]): GameState {
+    return produce(state, (draft) => {
+      commands.forEach((command) => command(draft))
+    })
   }
 
   public new(): GameState {
     return {
       stage: Stage.Protoplasm,
       resources: {
-        [Stage.Protoplasm]: {
-          RNA: {
-            display: true,
-            amount: 0,
-            max: 100,
-            rate: 0,
-          },
-          DNA: {
-            display: false,
-            amount: 0,
-            max: 100,
-            rate: 0,
-          },
+        [ResourceNames.RNA]: {
+          display: true,
+          amount: 0,
+          max: 100,
+          // rate: 0,
+        },
+        [ResourceNames.DNA]: {
+          display: false,
+          amount: 0,
+          max: 100,
+          // rate: 0,
+        },
+        [ResourceNames.FOOD]: {
+          display: false,
+          amount: 0,
+          max: 100,
+          // rate: 0,
+        },
+        [ResourceNames.LUMBER]: {
+          display: false,
+          amount: 0,
+          max: 100,
+          // rate: 0,
+        },
+        [ResourceNames.STONE]: {
+          display: false,
+          amount: 0,
+          max: 100,
+          // rate: 0,
+        },
+      },
+      buildings: {
+        rna: {
+          display: true,
+          amount: 0,
         },
       },
     }
