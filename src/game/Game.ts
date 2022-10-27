@@ -2,6 +2,7 @@ import { produce } from 'immer'
 import { GameState } from './GameState'
 import Stage from './Stages'
 import ResourceNames from './Resources'
+import { HarvestActionIds } from './HarvestActions'
 import { Command } from './Commands'
 
 export default class Game {
@@ -25,7 +26,7 @@ export default class Game {
     })
   }
 
-  public new(): GameState {
+  public static new(): GameState {
     return {
       stage: Stage.Protoplasm,
       resources: {
@@ -58,6 +59,14 @@ export default class Game {
           amount: 0,
           max: 100,
           // rate: 0,
+        },
+      },
+      actions: {
+        [HarvestActionIds.RNA]: {
+          display: true,
+        },
+        [HarvestActionIds.DNA]: {
+          display: false,
         },
       },
       buildings: {

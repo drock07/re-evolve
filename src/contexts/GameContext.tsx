@@ -1,6 +1,15 @@
 import { createContext, useContext } from 'react'
 import { useGame } from '~/hooks'
-const GameContext = createContext<ReturnType<typeof useGame> | []>([])
+import { Game } from '~/game'
+const GameContext = createContext<ReturnType<typeof useGame>>([
+  Game.new(),
+  {
+    start: () => {},
+    stop: () => {},
+    importGame: (x) => {},
+    exportGame: () => 'game',
+  },
+])
 
 function GameContextProvider(props: any) {
   const ctx = useGame()

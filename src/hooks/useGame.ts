@@ -47,7 +47,7 @@ function useGame(): [GameState, typeof metaMethods] {
   //     },
   //   }
   // )
-  const [gameState, dispatch] = useReducer(reducer, game.new())
+  const [gameState, dispatch] = useReducer(reducer, Game.new())
 
   useEffect(() => {
     function short() {

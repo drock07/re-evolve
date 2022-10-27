@@ -1,11 +1,10 @@
-export default {
-  RNA: 'RNA',
-  DNA: 'DNA',
-  FOOD: 'Food',
-  LUMBER: 'Lumber',
-  STONE: 'Stone',
-} as const
-
+enum Resources {
+  RNA = 'RNA',
+  DNA = 'DNA',
+  FOOD = 'Food',
+  LUMBER = 'Lumber',
+  STONE = 'Stone',
+}
 export interface ResourceState {
   display: boolean
   // value: number;
@@ -22,3 +21,5 @@ export interface ResourceState {
   // tradeable: boolean;
   // trade: number;
 }
+
+export default Resources
