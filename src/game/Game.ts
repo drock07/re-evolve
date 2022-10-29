@@ -1,80 +1,70 @@
-import { produce } from 'immer'
-import { GameState } from './GameState'
-import Stage from './Stages'
-import ResourceNames from './Resources'
-import { HarvestActionIds } from './HarvestActions'
-import { Command } from './Commands'
+// import { produce } from 'immer'
+import produce from 'immer'
+import ActionManager from './ActionManager'
+import { ActionIds } from './Actions'
+import GameState from './GameState/GameState'
+import ResourceManager from './ResourceManager'
+import Resource from './types/Resources'
+
+type StateChangeCallback = (state: GameState) => void
 
 export default class Game {
-  public fastLoop(state: GameState): GameState {
-    return state
+  private _state: GameState
+  public get state(): GameState {
+    return this._state
   }
-  public midLoop(state: GameState): GameState {
-    return produce(state, (draft) => {
-      if (draft.resources.RNA.amount < draft.resources.RNA.max) {
-        draft.resources.RNA.amount++
-      }
-    })
-  }
-  public longLoop(state: GameState): GameState {
-    return state
+  private set state(newValue: GameState) {
+    this._state = newValue
+    this.stateChangeSubscriptions.forEach((cb) => cb(this._state))
   }
 
-  public executeCommands(state: GameState, commands: Command[]): GameState {
-    return produce(state, (draft) => {
-      commands.forEach((command) => command(draft))
-    })
-  }
+  private stateChangeSubscriptions: StateChangeCallback[] = []
+  private resourceManager: ResourceManager = new ResourceManager()
+  private actionManager: ActionManager = new ActionManager()
 
-  public static new(): GameState {
-    return {
-      stage: Stage.Protoplasm,
-      resources: {
-        [ResourceNames.RNA]: {
-          display: true,
-          amount: 0,
-          max: 100,
-          // rate: 0,
-        },
-        [ResourceNames.DNA]: {
-          display: false,
-          amount: 0,
-          max: 100,
-          // rate: 0,
-        },
-        [ResourceNames.FOOD]: {
-          display: false,
-          amount: 0,
-          max: 100,
-          // rate: 0,
-        },
-        [ResourceNames.LUMBER]: {
-          display: false,
-          amount: 0,
-          max: 100,
-          // rate: 0,
-        },
-        [ResourceNames.STONE]: {
-          display: false,
-          amount: 0,
-          max: 100,
-          // rate: 0,
-        },
-      },
-      actions: {
-        [HarvestActionIds.RNA]: {
-          display: true,
-        },
-        [HarvestActionIds.DNA]: {
-          display: false,
-        },
-      },
-      buildings: {
-        rna: {
-          display: true,
-          amount: 0,
-        },
-      },
+  constructor(importString?: string) {
+    if (importString) {
+      this._state = new GameState()
+    } else {
+      var s = new GameState()
+      this.resourceManager.enable(s, Resource.RNA)
+      this.resourceManager.enable(s, Resource.DNA)
+      s.actions.push(ActionIds.RNA)
+      s.actions.push(ActionIds.DNA)
+      this._state = s
     }
   }
+
+  public subscribeToStateChange(callback: StateChangeCallback) {
+    this.stateChangeSubscriptions.push(callback)
+  }
+
+  public unsubscribeToStateChange(callback: StateChangeCallback) {
+    var index = this.stateChangeSubscriptions.findIndex((cb) => cb === callback)
+    if (index < -1) return
+    this.stateChangeSubscriptions = this.stateChangeSubscriptions.splice(
+      index,
+      1
+    )
+  }
+
+  public fastLoop(): void {}
+  public midLoop(): void {}
+  public longLoop(): void {}
+
+  public get actions() {
+    return this.actionManager.getEnabledActions(this.state, (editState) => {
+      this.state = produce(this.state, (draft) => {
+        editState(draft)
+      })
+    })
+  }
+
+  // public midLoop(state: GameState): GameState {
+  //   return produce(state, (draft) => {
+  //     if (draft.resources.RNA.amount < draft.resources.RNA.max) {
+  //       draft.resources.RNA.amount++
+  //     }
+  //   })
+  // }
 }

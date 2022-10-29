@@ -1,5 +1,5 @@
-import ResourceNames from './Resources'
-import Resources from './Resources'
+import ResourceNames from './types/Resources'
+import Resources from './types/Resources'
 import type { Command } from './Commands'
 
 export interface GameBuilding {

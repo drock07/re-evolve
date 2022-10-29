@@ -1,11 +1,8 @@
-const Loops = {
-  SHORT: 'short',
-  MID: 'mid',
-  LONG: 'long',
-} as const
-
-type LoopsValues = typeof Loops[keyof typeof Loops]
-
+enum Loop {
+  SHORT = 'short',
+  MID = 'mid',
+  LONG = 'long',
+}
 interface LoopIntervals {
   main_loop?: number
   mid_loop?: number
@@ -35,50 +32,47 @@ export default class GameLoopManager {
   private intervals: LoopIntervals = {}
 
   private subscriptions: {
-    [Loops.SHORT]: SubscriptionCallback[]
-    [Loops.MID]: SubscriptionCallback[]
-    [Loops.LONG]: SubscriptionCallback[]
+    [Loop.SHORT]: SubscriptionCallback[]
+    [Loop.MID]: SubscriptionCallback[]
+    [Loop.LONG]: SubscriptionCallback[]
   } = {
-    [Loops.SHORT]: [],
-    [Loops.MID]: [],
-    [Loops.LONG]: [],
+    [Loop.SHORT]: [],
+    [Loop.MID]: [],
+    [Loop.LONG]: [],
   }
 
   constructor(options?: GameLoopOptions) {
     this.options = { ...defaultOptions, ...options }
     if (window.Worker && !this.webWorker && !this.options.disableWorker) {
       this.webWorker = new Worker(new URL('./LoopWorker.ts', import.meta.url))
-      this.webWorker.addEventListener(
-        'message',
-        ({ data }: { data: LoopsValues }) => {
-          switch (data) {
-            case Loops.SHORT:
-              this.fastLoop()
-              break
-            case Loops.MID:
-              this.midLoop()
-              break
-            case Loops.LONG:
-              this.longLoop()
-              break
-          }
+      this.webWorker.addEventListener('message', ({ data }: { data: Loop }) => {
+        switch (data) {
+          case Loop.SHORT:
+            this.fastLoop()
+            break
+          case Loop.MID:
+            this.midLoop()
+            break
+          case Loop.LONG:
+            this.longLoop()
+            break
         }
-      )
+      })
     }
   }
 
   private fastLoop(): void {
-    this.subscriptions[Loops.SHORT].forEach((cb) => {
+    this.subscriptions[Loop.SHORT].forEach((cb) => {
       cb()
     }, this)
   }
   private midLoop(): void {
-    this.subscriptions[Loops.MID].forEach((cb) => {
+    this.subscriptions[Loop.MID].forEach((cb) => {
       cb()
     }, this)
   }
   private longLoop(): void {
-    this.subscriptions[Loops.LONG].forEach((cb) => {
+    this.subscriptions[Loop.LONG].forEach((cb) => {
       cb()
     }, this)
   }
@@ -89,15 +83,15 @@ export default class GameLoopManager {
 
     if (this.webWorker) {
       this.webWorker.postMessage({
-        loop: Loops.SHORT,
+        loop: Loop.SHORT,
         period: this.options.shortTimer,
       })
       this.webWorker.postMessage({
-        loop: Loops.MID,
+        loop: Loop.MID,
         period: this.options.midTimer,
       })
       this.webWorker.postMessage({
-        loop: Loops.LONG,
+        loop: Loop.LONG,
         period: this.options.longTimer,
       })
     } else {
@@ -126,11 +120,11 @@ export default class GameLoopManager {
     }
   }
 
-  public subscribe(loop: LoopsValues, callback: SubscriptionCallback): void {
+  public subscribe(loop: Loop, callback: SubscriptionCallback): void {
     this.subscriptions[loop].push(callback)
   }
 
-  public unsubscribe(loop: LoopsValues, callback: SubscriptionCallback): void {
+  public unsubscribe(loop: Loop, callback: SubscriptionCallback): void {
     const index = this.subscriptions[loop].findIndex((cb) => callback === cb)
     if (index < 0) return
     delete this.subscriptions[loop][index]

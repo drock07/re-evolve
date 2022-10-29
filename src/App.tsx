@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { GameContextProvider } from './contexts/GameContext'
-import { useIsMobileBreakpoint } from './hooks'
+// import { GameContextProvider } from './contexts/GameContext'
+import { useGame, useIsMobileBreakpoint } from './hooks'
 
 import ResourcesPane from './components/ResourcesPane'
 import ActionsPane from './components/ActionsPane'
@@ -19,10 +19,21 @@ const Tabs = {
 function App() {
   const isMobile = useIsMobileBreakpoint()
   const [currentTab, setCurrentTab] = useState(Tabs.RESOURCES)
+
+  const [gameState, game] = useGame()
+
   return (
-    <GameContextProvider>
-      <div className='grid h-full w-full grid-cols-1  grid-rows-[60px_1fr_60px] md:grid-cols-[100px_1fr_100px]'>
-        <Header />
+    // <GameContextProvider>
+    // <div className='grid h-full w-full grid-cols-1  grid-rows-[60px_1fr_60px] md:grid-cols-[100px_1fr_100px]'>
+    <div>
+      <pre>{JSON.stringify(gameState, null, 2)}</pre>
+
+      {game.actions.map(({ id, title, disabled, action }) => (
+        <button key={id} disabled={disabled} onClick={action}>
+          {title}
+        </button>
+      ))}
+      {/* <Header />
 
         {isMobile ? (
           {
@@ -57,9 +68,9 @@ function App() {
             onClick={() => setCurrentTab(Tabs.MESSAGES)}
             active={currentTab === Tabs.MESSAGES}
           />
-        </footer>
-      </div>
-    </GameContextProvider>
+        </footer> */}
+    </div>
+    // </GameContextProvider>
   )
 }
 

@@ -1,18 +1,11 @@
-enum Resources {
-  RNA = 'RNA',
-  DNA = 'DNA',
-  FOOD = 'Food',
-  LUMBER = 'Lumber',
-  STONE = 'Stone',
-}
-export interface ResourceState {
+export default interface ResourceState {
   display: boolean
-  // value: number;
   amount: number
   max: number
+  rate: number
+  // value: number;
   // diff: number;
   // delta: number;
-  // rate: number
 
   // stackable: boolean;
   // crates: number;
@@ -21,5 +14,3 @@ export interface ResourceState {
   // tradeable: boolean;
   // trade: number;
 }
-
-export default Resources
