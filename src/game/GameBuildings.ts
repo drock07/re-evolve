@@ -1,35 +1,63 @@
-import ResourceNames from './types/Resources'
-import Resources from './types/Resources'
-import type { Command } from './Commands'
+import AmountCalculator from './types/AmountCalculator'
+import Resource from './types/Resources'
 
-export interface GameBuilding {
-  title: string
-  description: string
-  effect?: string
-  cost?: {
-    -readonly [Value in typeof ResourceNames[keyof typeof ResourceNames]]?: () => number
-  }
-  action: Command
+export enum BuildingIds {
+  MEMBRANE = 'membrane',
+  ORGANELLES = 'organelles',
+  NUCLEUS = 'nucleus',
+  EUKARYOTIC_CELL = 'eukaryotic_cell',
+  MITOCHONDRIA = 'mitochondria',
+  // SEXUAL_REPRODUCTION = 'sexual_reproduction',
+  // PHAGOCYTOSIS = 'phagocytosis',
+  // CHLOROPLASTS = 'chloroplasts',
+  // CHITIN = 'chitin',
+  // MULTICELLULAR = 'multicellular',
+  // SPORES = 'spores',
+  // POIKILOHYDRIC = 'poikilohydric',
+  // BILATERAL_SYMMETRY = 'bilateral_symmetry',
+  // BRYOPHYTE = 'bryophyte',
+  // ARTHROPODS = 'arthropods',
+  // MAMMALS = 'mammals',
+  // HUMANOID = 'humanoid',
+  // GIGANTISM = 'gigantism',
+  // DWARFISM = 'dwarfism',
+  // ANIMALISM = 'animalism',
+  // CARNIVORE = 'carnivore',
+  // HERBIVORE = 'herbivore',
+  // OMNIVORE = 'omnivore',
+  // EGGSHELL = 'eggshell',
+  // ENDOTHERMIC = 'endothermic',
+  // ECTOTHERMIC = 'ectothermic',
+  // SENTIENCE = 'sentience',
 }
 
-export interface GameBuildingState {
-  display: boolean
-  amount: number
+export interface BuildingDescription {
+  readonly title: string
+  readonly description: string
+  readonly effectDescription?: string
+  readonly toggleable?: boolean
+  readonly cost?: {
+    readonly resource: Resource
+    readonly amount: AmountCalculator
+  }[]
 }
 
-const buildings = {
-  rna: {
-    title: 'RNA',
-    description: 'Creates new RNA',
-    action: (state) => {
-      if (
-        state.resources[Resources.RNA].amount <
-        state.resources[Resources.RNA].max
-      ) {
-        state.resources[Resources.RNA].amount++
-      }
-    },
-  } as GameBuilding,
-} as const
+const buildings: {
+  [key in BuildingIds]?: BuildingDescription
+} = {
+  [BuildingIds.MEMBRANE]: {
+    title: 'Membrane',
+    description: 'Evolve Membranes',
+    effectDescription: 'Increases RNA capacity by 5',
+    cost: [
+      {
+        resource: Resource.RNA,
+        amount: (state) => {
+          return 5
+        },
+      },
+    ],
+  },
+}
 
 export default buildings

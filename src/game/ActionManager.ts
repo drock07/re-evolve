@@ -16,7 +16,7 @@ export default class ActionManager {
     return action.cost.every(({ resource, amount }) => {
       const r = state.resources[resource]
       if (!r) return false
-      amount = amount instanceof Function ? amount() : amount
+      amount = amount instanceof Function ? amount(state) : amount
       return r.amount >= amount
     })
   }
@@ -37,14 +37,14 @@ export default class ActionManager {
             action.cost?.forEach(({ resource, amount }) => {
               const r = s.resources[resource]
               if (!r) return
-              amount = amount instanceof Function ? amount() : amount
+              amount = amount instanceof Function ? amount(s) : amount
               r.amount -= amount
             })
 
             action.results.forEach(({ resource, amount }) => {
               const r = s.resources[resource]
               if (!r) return
-              amount = amount instanceof Function ? amount() : amount
+              amount = amount instanceof Function ? amount(s) : amount
               r.amount += amount
             })
           }),

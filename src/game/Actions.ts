@@ -1,3 +1,4 @@
+import AmountCalculator from './types/AmountCalculator'
 import Resources from './types/Resources'
 
 export enum ActionIds {
@@ -5,11 +6,17 @@ export enum ActionIds {
   DNA = 'dna',
 }
 
-interface ActionDescription {
-  title: string
-  description: string
-  cost?: { resource: Resources; amount: number | (() => number) }[]
-  results: { resource: Resources; amount: number | (() => number) }[]
+export interface ActionDescription {
+  readonly title: string
+  readonly description: string
+  readonly cost?: {
+    readonly resource: Resources
+    readonly amount: AmountCalculator
+  }[]
+  readonly results: {
+    readonly resource: Resources
+    readonly amount: AmountCalculator
+  }[]
 }
 
 const actions: {

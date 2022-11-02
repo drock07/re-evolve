@@ -1,4 +1,5 @@
 import GameState from './GameState'
+import ResourceState from './GameState/ResourceState'
 import Resource from './types/Resources'
 
 export default class ResourceManager {
@@ -7,12 +8,10 @@ export default class ResourceManager {
     if (r) {
       r.display = true
     } else {
-      state.resources[resource] = {
+      state.resources[resource] = new ResourceState({
         display: true,
-        amount: 0,
         max: 100,
-        rate: 0,
-      }
+      })
     }
   }
 
