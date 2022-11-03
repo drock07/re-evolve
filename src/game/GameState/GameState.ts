@@ -1,7 +1,7 @@
 import { immerable } from 'immer'
 import Stage from '../types/Stages'
 import Resource from '../types/Resources'
-import { BuildingIds } from '../GameBuildings'
+import { BuildingIds } from '../Buildings'
 import { ActionIds } from '../Actions'
 import ResourceState from './ResourceState'
 import BuildingState from './BuildingState'

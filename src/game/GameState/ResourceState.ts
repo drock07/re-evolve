@@ -1,4 +1,13 @@
 import { immerable } from 'immer'
+import { BuildingIds } from '../Buildings'
+
+interface Modifier {
+  id: BuildingIds
+  max?: number
+  rate?: number
+}
+
+type ModifiableProperties = Exclude<keyof Modifier, 'id'>
 
 interface ResourceStateConstructorArgs {
   display?: boolean
@@ -11,15 +20,28 @@ export default class ResourceState {
 
   public display: boolean = false
   public amount: number = 0
+  public modifiers: Modifier[] = []
 
   public readonly maxBase: number = 0
-  public get base(): number {
-    return this.maxBase
+  public get max(): number {
+    return (
+      this.maxBase +
+      this.modifiers
+        .filter(({ max }) => max !== undefined)
+        .map(({ max }) => max!)
+        .reduce((prev, cur) => prev + cur, 0)
+    )
   }
 
   public readonly rateBase: number = 0
   public get rate(): number {
-    return this.rateBase
+    return (
+      this.rateBase +
+      this.modifiers
+        .filter(({ rate }) => rate !== undefined)
+        .map(({ rate }) => rate!)
+        .reduce((prev, cur) => prev + cur, 0)
+    )
   }
 
   constructor(initialValues: ResourceStateConstructorArgs) {
@@ -34,6 +56,18 @@ export default class ResourceState {
     if (initialValues.rate !== undefined) {
       this.rateBase = initialValues.rate
     }
+  }
+
+  public adjustModifier(
+    id: BuildingIds,
+    property: ModifiableProperties,
+    amount: number
+  ): void {
+    let i = this.modifiers.findIndex(({ id: modId }) => modId === id)
+    if (i < 0) {
+      i = this.modifiers.push({ id })
+    }
+    this.modifiers[i][property] = (this.modifiers[i][property] ?? 0) + amount
   }
 
   // value: number;

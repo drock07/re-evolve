@@ -2,6 +2,8 @@
 import produce from 'immer'
 import ActionManager from './ActionManager'
 import { ActionIds } from './Actions'
+import BuildingManager from './BuildingManager'
+import { BuildingIds } from './Buildings'
 import GameState from './GameState/GameState'
 import ResourceManager from './ResourceManager'
 import Resource from './types/Resources'
@@ -21,6 +23,7 @@ export default class Game {
   private stateChangeSubscriptions: StateChangeCallback[] = []
   private resourceManager: ResourceManager = new ResourceManager()
   private actionManager: ActionManager = new ActionManager()
+  private buildingManager: BuildingManager = new BuildingManager()
 
   constructor(importString?: string) {
     if (importString) {
@@ -31,6 +34,7 @@ export default class Game {
       this.resourceManager.enable(s, Resource.DNA)
       s.actions.push(ActionIds.RNA)
       s.actions.push(ActionIds.DNA)
+      this.buildingManager.enable(s, BuildingIds.MEMBRANE)
       this._state = s
     }
   }
@@ -54,6 +58,14 @@ export default class Game {
 
   public get actions() {
     return this.actionManager.getEnabledActions(this.state, (editState) => {
+      this.state = produce(this.state, (draft) => {
+        editState(draft)
+      })
+    })
+  }
+
+  public get buildings() {
+    return this.buildingManager.getEnabledBuildings(this.state, (editState) => {
       this.state = produce(this.state, (draft) => {
         editState(draft)
       })
