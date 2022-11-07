@@ -3,10 +3,15 @@ enum Loop {
   MID = 'mid',
   LONG = 'long',
 }
-interface LoopIntervals {
+export interface LoopIntervals {
   main_loop?: number
   mid_loop?: number
   long_loop?: number
+}
+
+export interface LoopWorkerArguments {
+  loop: Loop | 'clear'
+  period: number
 }
 
 export type SubscriptionCallback = () => void

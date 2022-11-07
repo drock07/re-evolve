@@ -1,2 +1,2 @@
-export { default as useGame, type useGameReturnValues } from './useGame'
+export { default as useGame } from './useGame'
 export * from './useBreakpoint'
