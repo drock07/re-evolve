@@ -1,13 +1,6 @@
 import GameState from './GameState'
 import actions, { ActionDescription } from './Actions'
-
-interface Action {
-  id: string
-  title: string
-  description: string
-  disabled: boolean
-  action: () => void
-}
+import ActionView from './types/ActionView'
 
 export default class ActionManager {
   private canAfford(state: GameState, action: ActionDescription): boolean {
@@ -24,8 +17,8 @@ export default class ActionManager {
   public getEnabledActions(
     state: GameState,
     dispatchStateEdit: (editState: (s: GameState) => void) => void
-  ): Action[] {
-    return state.actions.reduce<Action[]>((filteredActions, actionId) => {
+  ): ActionView[] {
+    return state.actions.reduce<ActionView[]>((filteredActions, actionId) => {
       const action = actions[actionId]
       filteredActions.push({
         id: actionId,

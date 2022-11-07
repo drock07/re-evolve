@@ -2,20 +2,7 @@ import Buildings, { BuildingIds } from './Buildings'
 import GameState from './GameState'
 import ResourceState from './GameState/ResourceState'
 import Resources from './types/Resources'
-
-interface Resource {
-  id: string
-  title: string
-  amount: number
-  max: number
-  rate: number
-  modifiers: {
-    buildingId: BuildingIds
-    buildingName: string
-    max?: number
-    rate?: number
-  }[]
-}
+import ResourceView from './types/ResourceView'
 
 export default class ResourceManager {
   public enable(state: GameState, resource: Resources): void {
@@ -37,8 +24,8 @@ export default class ResourceManager {
     }
   }
 
-  public getEnabledResources(state: GameState): Resource[] {
-    const filteredResources: Resource[] = []
+  public getEnabledResources(state: GameState): ResourceView[] {
+    const filteredResources: ResourceView[] = []
 
     let id: Resources
     for (id in state.resources) {

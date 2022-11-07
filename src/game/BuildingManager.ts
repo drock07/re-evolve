@@ -1,13 +1,6 @@
 import GameState from './GameState'
 import buildings, { BuildingDescription, BuildingIds } from './Buildings'
-
-interface Building {
-  id: string
-  title: string
-  description: string
-  disabled: boolean
-  action: () => void
-}
+import BuildingView from './types/BuildingView'
 
 export default class BuildingManager {
   private canAfford(state: GameState, building: BuildingDescription): boolean {
@@ -24,8 +17,8 @@ export default class BuildingManager {
   public getEnabledBuildings(
     state: GameState,
     dispatchStateEdit: (editState: (s: GameState) => void) => void
-  ): Building[] {
-    const filteredBuildings: Building[] = []
+  ): BuildingView[] {
+    const filteredBuildings: BuildingView[] = []
 
     let id: BuildingIds
     for (id in state.buildings) {

@@ -6,7 +6,7 @@ import Game, { GameLoopManager, GameState } from '~/game'
 
 function useGame(): Game {
   const [game] = useState(() => new Game())
-  const [state, setState] = useState<GameState>(game.state)
+  const [, setState] = useState<GameState>(game.state)
 
   useEffect(() => {
     game.subscribeToStateChange(setState)
