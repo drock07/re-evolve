@@ -1,13 +1,31 @@
 import { useGame } from './hooks'
 
 function App() {
-  const [gameState, game] = useGame()
+  const game = useGame()
 
   return (
     <div className='flex'>
-      <pre>{JSON.stringify(gameState, null, 2)}</pre>
-
       <div className='ml-auto'>
+        {game.resources.map(({ id, title, amount, max, rate, modifiers }) => (
+          <div key={id}>
+            <div className='flex flex-row'>
+              <span className='flex-1'>{title}</span>
+              <span>
+                {amount} / {max}
+              </span>
+              <span>{rate}/s</span>
+            </div>
+            <div>
+              {modifiers.map(({ buildingId, buildingName, max, rate }) => (
+                <div key={buildingId}>
+                  <span>{buildingName}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div>
         <div className='flex flex-col'>
           {game.actions.map(({ id, title, disabled, action }) => (
             <button

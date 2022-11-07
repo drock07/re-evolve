@@ -49,7 +49,7 @@ export default class BuildingManager {
 
             if (building.modifies?.resources) {
               building.modifies.resources.forEach(({ resource, rate, max }) => {
-                const r = state.resources[resource]
+                const r = s.resources[resource]
                 if (!r) return
                 if (max) r.adjustModifier(id, 'max', max)
               })

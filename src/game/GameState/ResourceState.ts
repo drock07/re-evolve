@@ -65,7 +65,7 @@ export default class ResourceState {
   ): void {
     let i = this.modifiers.findIndex(({ id: modId }) => modId === id)
     if (i < 0) {
-      i = this.modifiers.push({ id })
+      i = this.modifiers.push({ id }) - 1
     }
     this.modifiers[i][property] = (this.modifiers[i][property] ?? 0) + amount
   }

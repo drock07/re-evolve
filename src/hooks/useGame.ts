@@ -4,7 +4,7 @@ import Game, { GameLoopManager, GameState } from '~/game'
 
 // const gameLoop = new GameLoopManager()
 
-function useGame(): [GameState, Game] {
+function useGame(): Game {
   const [game] = useState(() => new Game())
   const [state, setState] = useState<GameState>(game.state)
 
@@ -70,7 +70,7 @@ function useGame(): [GameState, Game] {
   //   // command dispatcher
   //   metaMethods,
   // ]
-  return [state, game]
+  return game
 }
 
 export default useGame

@@ -56,6 +56,10 @@ export default class Game {
   public midLoop(): void {}
   public longLoop(): void {}
 
+  public get resources() {
+    return this.resourceManager.getEnabledResources(this.state)
+  }
+
   public get actions() {
     return this.actionManager.getEnabledActions(this.state, (editState) => {
       this.state = produce(this.state, (draft) => {
