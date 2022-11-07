@@ -1,5 +1,17 @@
-function PanelTitle({ children }: { children: React.ReactNode }) {
-  return <div className='p-2 text-lg font-semibold'>{children}</div>
+import clsx from 'clsx'
+
+function PanelTitle({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
+  return (
+    <div className={clsx('p-2 text-lg font-semibold', className)}>
+      {children}
+    </div>
+  )
 }
 
 export default PanelTitle

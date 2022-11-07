@@ -1,7 +1,13 @@
 import clsx from 'clsx'
+import PanelTitle from './PanelTitle'
 
 function MessagesPanel({ className }: { className?: string }) {
-  return <div className={clsx(className)}>messages appear here</div>
+  return (
+    <div className={clsx(className)}>
+      <PanelTitle className='hidden md:block'>Log</PanelTitle>
+      messages appear here
+    </div>
+  )
 }
 
 export default MessagesPanel
