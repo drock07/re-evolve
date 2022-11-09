@@ -12,7 +12,7 @@ function ActionButton({
   return (
     <button
       type='button'
-      className='md:flex-inline mb-2 flex w-full flex-col rounded-md border p-3 text-left md:w-1/2'
+      className='md:flex-inline mb-2 flex w-full flex-col rounded-md border p-3 text-left disabled:bg-gray-100 disabled:text-gray-500 md:w-1/2'
       disabled={disabled}
       onClick={() => action()}
     >
