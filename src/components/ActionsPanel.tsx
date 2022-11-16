@@ -84,7 +84,7 @@ function ActionsPanel({
       <div className='gap-2 overflow-y-auto p-2 md:order-3 md:flex md:items-start md:justify-start md:px-0 md:py-2'>
         {tabs[currentTab].content}
       </div>
-      <div className='flex flex-row justify-around bg-gray-200 p-2 md:order-2 md:justify-start md:gap-4 md:bg-transparent'>
+      <div className='safe-bottom flex flex-row justify-around bg-gray-200 p-2 md:order-2 md:justify-start md:gap-4 md:bg-transparent'>
         {(Object.entries(tabs) as [TabIds, Tab][]).map(
           ([id, { title, icon }]) => (
             <button
