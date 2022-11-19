@@ -25,6 +25,10 @@ export default class ActionManager {
         title: action.title,
         description: action.description,
         disabled: !this.canAfford(state, action),
+        cost: action.cost?.map(({ resource, amount }) => ({
+          resource,
+          amount: amount instanceof Function ? amount(state) : amount,
+        })),
         action: () =>
           dispatchStateEdit((s) => {
             action.cost?.forEach(({ resource, amount }) => {

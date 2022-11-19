@@ -3,5 +3,9 @@ export default interface ActionView {
   title: string
   description: string
   disabled: boolean
+  cost?: {
+    resource: string
+    amount: number
+  }[]
   action: () => void
 }

@@ -1,7 +1,7 @@
-import { useMedia } from 'react-use'
+import { useMediaQuery } from '@react-hookz/web'
 
 export function useBreakpoint() {}
 
 export function useIsMobileBreakpoint() {
-  return !useMedia('(min-width: 768px)')
+  return !useMediaQuery('(min-width: 768px)')
 }

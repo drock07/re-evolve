@@ -30,6 +30,7 @@ export default class BuildingManager {
         id,
         title: building.title,
         description: building.description,
+        effectDescription: building.effectDescription,
         disabled: !this.canAfford(state, building),
         action: () =>
           dispatchStateEdit((s) => {

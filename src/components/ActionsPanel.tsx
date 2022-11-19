@@ -37,12 +37,13 @@ function ActionsPanel({
       icon: <GiStoneAxe />,
       content: (
         <>
-          {actions.map(({ id, title, description, disabled, action }) => (
+          {actions.map(({ id, title, description, disabled, action, cost }) => (
             <ActionButton
               key={id}
               title={title}
               description={description}
               disabled={disabled}
+              cost={cost}
               action={action}
             />
           ))}
@@ -54,15 +55,27 @@ function ActionsPanel({
       icon: <GiHouse />,
       content: (
         <>
-          {buildings.map(({ id, title, description, disabled, action }) => (
-            <ActionButton
-              key={id}
-              title={title}
-              description={description}
-              disabled={disabled}
-              action={action}
-            />
-          ))}
+          {buildings.map(
+            ({
+              id,
+              title,
+              description,
+              effectDescription,
+              disabled,
+              action,
+              cost,
+            }) => (
+              <ActionButton
+                key={id}
+                title={title}
+                description={description}
+                effectDescription={effectDescription}
+                disabled={disabled}
+                cost={cost}
+                action={action}
+              />
+            )
+          )}
         </>
       ),
     },
@@ -74,14 +87,9 @@ function ActionsPanel({
   }
 
   return (
-    <div
-      className={clsx(
-        'grid grid-cols-1 grid-rows-[auto_1fr_auto] md:grid-rows-[auto_auto_1fr]',
-        className
-      )}
-    >
+    <div className={clsx('flex h-full flex-col overflow-hidden', className)}>
       <PanelTitle>Actions</PanelTitle>
-      <div className='gap-2 overflow-y-auto p-2 md:order-3 md:flex md:items-start md:justify-start md:px-0 md:py-2'>
+      <div className='grid flex-1 grid-cols-1 content-start gap-2 overflow-y-auto p-2 md:order-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
         {tabs[currentTab].content}
       </div>
       <div className='safe-bottom flex flex-row justify-around bg-gray-200 p-2 md:order-2 md:justify-start md:gap-4 md:bg-transparent'>
@@ -90,10 +98,15 @@ function ActionsPanel({
             <button
               key={id}
               type='button'
-              className='flex flex-col items-center'
+              className={clsx(
+                'flex flex-col items-center pb-1 after:mt-1 after:h-0.5 after:transition-[width] after:content-[""]',
+                currentTab === id
+                  ? 'after:w-full after:bg-blue-300'
+                  : 'after:w-4/5'
+              )}
               onClick={() => setCurrentTab(id)}
             >
-              <div className='mb-1 text-2xl md:hidden'>{icon}</div>
+              <div className='mb-1 text-xl md:hidden'>{icon}</div>
               <div className='text-sm'>{title}</div>
             </button>
           )
