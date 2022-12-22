@@ -33,6 +33,7 @@ export default class ResourceState {
     )
   }
 
+  // rate should be expressed as the amount per fast tick (250ms by default)
   public readonly rateBase: number = 0
   public get rate(): number {
     return (

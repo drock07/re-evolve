@@ -61,6 +61,7 @@ function ActionsPanel({
               title,
               description,
               effectDescription,
+              amount,
               disabled,
               action,
               cost,
@@ -70,6 +71,7 @@ function ActionsPanel({
                 title={title}
                 description={description}
                 effectDescription={effectDescription}
+                amount={amount}
                 disabled={disabled}
                 cost={cost}
                 action={action}

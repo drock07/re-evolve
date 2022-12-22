@@ -4,6 +4,7 @@ export default interface BuildingView {
   description: string
   effectDescription?: string
   disabled: boolean
+  amount: number
   cost?: {
     resource: string
     amount: number

@@ -2,7 +2,7 @@ import { useEffect, useCallback, useMemo, useState, useRef } from 'react'
 // import LZString from 'lz-string'
 import Game, { GameLoopManager, GameState } from '~/game'
 
-// const gameLoop = new GameLoopManager()
+const gameLoop = new GameLoopManager()
 
 function useGame(): Game {
   const [game] = useState(() => new Game())
@@ -13,26 +13,11 @@ function useGame(): Game {
     return () => game.unsubscribeToStateChange(setState)
   }, [])
 
-  // useEffect(() => {
-  //   function short() {
-  //     dispatch({ type: 'short' })
-  //   }
-  //   function mid() {
-  //     dispatch({ type: 'mid' })
-  //   }
-  //   function long() {
-  //     dispatch({ type: 'long' })
-  //   }
-  //   gameLoop.subscribe('short', short)
-  //   gameLoop.subscribe('mid', mid)
-  //   gameLoop.subscribe('long', long)
-  //   gameLoop.start()
-  //   return () => {
-  //     gameLoop.unsubscribe('short', short)
-  //     gameLoop.unsubscribe('mid', mid)
-  //     gameLoop.unsubscribe('long', long)
-  //   }
-  // }, [])
+  useEffect(() => {
+    const unregister = game.registerGameLoop(gameLoop)
+    gameLoop.start()
+    return unregister
+  }, [])
   // const dispatchCommands = useCallback((commands: Command | Command[]) => {
   //   dispatch({ type: 'commands', commands })
   // }, [])

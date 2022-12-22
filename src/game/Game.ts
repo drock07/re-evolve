@@ -4,6 +4,7 @@ import ActionManager from './ActionManager'
 import { ActionIds } from './Actions'
 import BuildingManager from './BuildingManager'
 import { BuildingIds } from './Buildings'
+import GameLoopManager from './GameLoopManager'
 import GameState from './GameState/GameState'
 import ResourceManager from './ResourceManager'
 import Resource from './types/Resources'
@@ -20,6 +21,8 @@ export default class Game {
     this.stateChangeSubscriptions.forEach((cb) => cb(this._state))
   }
 
+  private timeMultiplier: number = 1
+
   private stateChangeSubscriptions: StateChangeCallback[] = []
   private resourceManager: ResourceManager = new ResourceManager()
   private actionManager: ActionManager = new ActionManager()
@@ -34,8 +37,31 @@ export default class Game {
       this.resourceManager.enable(s, Resource.DNA)
       s.actions.push(ActionIds.RNA)
       s.actions.push(ActionIds.DNA)
-      this.buildingManager.enable(s, BuildingIds.MEMBRANE)
       this._state = s
+    }
+  }
+
+  public registerGameLoop(loopManager: GameLoopManager): () => void {
+    const game = this
+    function short() {
+      game.fastLoop()
+    }
+    function mid() {
+      game.midLoop()
+    }
+    function long() {
+      game.longLoop()
+    }
+    loopManager.subscribe('short', short)
+    loopManager.subscribe('mid', mid)
+    loopManager.subscribe('long', long)
+
+    this.timeMultiplier = loopManager.options.shortTimer / 1000
+
+    return () => {
+      loopManager.unsubscribe('short', short)
+      loopManager.unsubscribe('mid', mid)
+      loopManager.unsubscribe('long', long)
     }
   }
 
@@ -52,7 +78,19 @@ export default class Game {
     )
   }
 
-  public fastLoop(): void {}
+  public fastLoop(): void {
+    this.state = produce(this.state, (draft) => {
+      let resource: Resource
+      for (resource in draft.resources) {
+        if (Object.prototype.hasOwnProperty.call(draft.resources, resource)) {
+          const r = draft.resources[resource]!
+          if (r.amount < r.max) {
+            r.amount += r.rate * this.timeMultiplier
+          }
+        }
+      }
+    })
+  }
   public midLoop(): void {}
   public longLoop(): void {}
 
@@ -75,12 +113,4 @@ export default class Game {
       })
     })
   }
-
-  // public midLoop(state: GameState): GameState {
-  //   return produce(state, (draft) => {
-  //     if (draft.resources.RNA.amount < draft.resources.RNA.max) {
-  //       draft.resources.RNA.amount++
-  //     }
-  //   })
-  // }
 }

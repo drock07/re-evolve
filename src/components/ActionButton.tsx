@@ -9,6 +9,7 @@ function ActionButton({
   title,
   description,
   effectDescription,
+  amount,
   cost,
   disabled,
   action,
@@ -16,6 +17,7 @@ function ActionButton({
   title: string
   description: string
   effectDescription?: string
+  amount?: number
   cost?: { resource: string; amount: number }[]
   disabled: boolean
   action: () => void
@@ -28,12 +30,17 @@ function ActionButton({
   let button = (
     <button
       type='button'
-      className='flex w-full flex-col p-2'
+      className='relative flex w-full flex-col p-2'
       onClick={() => action()}
       disabled={disabled}
     >
       <span>{title}</span>
       <span className='text-sm'>{description}</span>
+      {typeof amount !== undefined && (
+        <div className='absolute top-0 right-0 rounded-bl rounded-tr border-b border-l bg-white px-1'>
+          {amount}
+        </div>
+      )}
     </button>
   )
 
@@ -62,24 +69,20 @@ function ActionButton({
         sideOffset={8}
         hideWhenDetached
         side='bottom'
-        onPointerDownOutside={(e) => e.preventDefault}
+        onPointerDownOutside={(e) => e.preventDefault()}
       >
         {detailContent}
         <Tooltip.Arrow className='fill-white drop-shadow' />
       </Tooltip.Content>
     </Tooltip.Portal>
   ) : (
-    <Collapsible.Content className='data-[state=open]:animate-[slideDown_300ms_ease-out] data-[state=closed]:animate-[slideUp_300ms_ease-out] overflow-hidden'>
+    <Collapsible.Content className='overflow-hidden data-[state=open]:animate-[slideDown_300ms_ease-out] data-[state=closed]:animate-[slideUp_300ms_ease-out]'>
       <div className='mx-2 bg-gray-50 p-2'>{detailContent}</div>
     </Collapsible.Content>
   )
 
   return (
-    <Root
-      open={isDetailsOpen}
-      onOpenChange={setIsDetailsOpen}
-      delayDuration={0}
-    >
+    <Root open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
       <div
         className={clsx('flex flex-row divide-x rounded border', {
           'bg-gray-100': disabled,

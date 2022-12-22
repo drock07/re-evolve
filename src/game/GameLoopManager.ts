@@ -1,8 +1,4 @@
-enum Loop {
-  SHORT = 'short',
-  MID = 'mid',
-  LONG = 'long',
-}
+type Loop = 'short' | 'mid' | 'long'
 export interface LoopIntervals {
   main_loop?: number
   mid_loop?: number
@@ -31,19 +27,19 @@ const defaultOptions: GameLoopOptions = {
 }
 
 export default class GameLoopManager {
-  private options: GameLoopOptions
+  public options: GameLoopOptions
   private isRunning: boolean = false
   private webWorker?: Worker
   private intervals: LoopIntervals = {}
 
   private subscriptions: {
-    [Loop.SHORT]: SubscriptionCallback[]
-    [Loop.MID]: SubscriptionCallback[]
-    [Loop.LONG]: SubscriptionCallback[]
+    short: SubscriptionCallback[]
+    mid: SubscriptionCallback[]
+    long: SubscriptionCallback[]
   } = {
-    [Loop.SHORT]: [],
-    [Loop.MID]: [],
-    [Loop.LONG]: [],
+    short: [],
+    mid: [],
+    long: [],
   }
 
   constructor(options?: GameLoopOptions) {
@@ -52,13 +48,13 @@ export default class GameLoopManager {
       this.webWorker = new Worker(new URL('./LoopWorker.ts', import.meta.url))
       this.webWorker.addEventListener('message', ({ data }: { data: Loop }) => {
         switch (data) {
-          case Loop.SHORT:
+          case 'short':
             this.fastLoop()
             break
-          case Loop.MID:
+          case 'mid':
             this.midLoop()
             break
-          case Loop.LONG:
+          case 'long':
             this.longLoop()
             break
         }
@@ -67,17 +63,17 @@ export default class GameLoopManager {
   }
 
   private fastLoop(): void {
-    this.subscriptions[Loop.SHORT].forEach((cb) => {
+    this.subscriptions.short.forEach((cb) => {
       cb()
     }, this)
   }
   private midLoop(): void {
-    this.subscriptions[Loop.MID].forEach((cb) => {
+    this.subscriptions.mid.forEach((cb) => {
       cb()
     }, this)
   }
   private longLoop(): void {
-    this.subscriptions[Loop.LONG].forEach((cb) => {
+    this.subscriptions.long.forEach((cb) => {
       cb()
     }, this)
   }
@@ -88,15 +84,15 @@ export default class GameLoopManager {
 
     if (this.webWorker) {
       this.webWorker.postMessage({
-        loop: Loop.SHORT,
+        loop: 'short',
         period: this.options.shortTimer,
       })
       this.webWorker.postMessage({
-        loop: Loop.MID,
+        loop: 'mid',
         period: this.options.midTimer,
       })
       this.webWorker.postMessage({
-        loop: Loop.LONG,
+        loop: 'long',
         period: this.options.longTimer,
       })
     } else {

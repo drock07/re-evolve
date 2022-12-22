@@ -1,15 +1,27 @@
-import GameState from './GameState'
+import GameState, { BuildingState } from './GameState'
 import buildings, { BuildingDescription, BuildingIds } from './Buildings'
 import BuildingView from './types/BuildingView'
 
 export default class BuildingManager {
-  private canAfford(state: GameState, building: BuildingDescription): boolean {
+  private calculateCost(
+    base: number,
+    multiplier: number,
+    count: number
+  ): number {
+    return count * multiplier + base
+  }
+
+  private canAfford(
+    state: GameState,
+    building: BuildingDescription,
+    buildingCount: number
+  ): boolean {
     if (!building.cost) return true
 
-    return building.cost.every(({ resource, amount }) => {
+    return building.cost.every(({ resource, base, multiplier }) => {
       const r = state.resources[resource]
       if (!r) return false
-      amount = amount instanceof Function ? amount(state) : amount
+      const amount = this.calculateCost(base, multiplier, buildingCount)
       return r.amount >= amount
     })
   }
@@ -20,35 +32,74 @@ export default class BuildingManager {
   ): BuildingView[] {
     const filteredBuildings: BuildingView[] = []
 
-    let id: BuildingIds
-    for (id in state.buildings) {
-      const buildingState = state.buildings[id]
-      if (!buildingState?.display) continue
+    for (let id in buildings) {
+      const buildingId = id as BuildingIds
+      const building = buildings[buildingId]
+      const buildingState = state.buildings[buildingId]
 
-      const building = buildings[id]
+      const isAvailable = building.available(state)
+      if (!isAvailable) continue
+
       filteredBuildings.push({
         id,
         title: building.title,
         description: building.description,
-        effectDescription: building.effectDescription,
-        disabled: !this.canAfford(state, building),
-        action: () =>
+        effectDescription:
+          building.effectDescription instanceof Function
+            ? building.effectDescription(state)
+            : building.effectDescription,
+        disabled: !this.canAfford(state, building, buildingState?.amount ?? 0),
+        amount: buildingState?.amount ?? 0,
+        cost: building.cost?.map(({ resource, base, multiplier }) => {
+          return {
+            resource,
+            amount: this.calculateCost(
+              base,
+              multiplier,
+              buildingState?.amount ?? 0
+            ),
+          }
+        }),
+        action: () => {
           dispatchStateEdit((s) => {
-            building.cost?.forEach(({ resource, amount }) => {
+            let buildingState = s.buildings[buildingId]
+            if (!buildingState) {
+              buildingState = s.buildings[buildingId] = {
+                display: true,
+                amount: 0,
+              }
+            }
+
+            building.cost?.forEach(({ resource, base, multiplier }) => {
               const r = s.resources[resource]
               if (!r) return
-              amount = amount instanceof Function ? amount(s) : amount
+              const amount = this.calculateCost(
+                base,
+                multiplier,
+                buildingState?.amount ?? 0
+              )
               r.amount -= amount
             })
+
+            buildingState.amount += 1
 
             if (building.modifies?.resources) {
               building.modifies.resources.forEach(({ resource, rate, max }) => {
                 const r = s.resources[resource]
                 if (!r) return
-                if (max) r.adjustModifier(id, 'max', max)
+                if (max) r.adjustModifier(buildingId, 'max', max)
+                if (rate) {
+                  if (typeof rate === 'number') {
+                    r.adjustModifier(buildingId, 'rate', rate)
+                  } else {
+                    /// TODO
+                    r.adjustModifier(buildingId, 'rate', 1)
+                  }
+                }
               })
             }
-          }),
+          })
+        },
       })
     }
 
