@@ -1,8 +1,8 @@
 type Loop = 'short' | 'mid' | 'long'
 export interface LoopIntervals {
-  main_loop?: number
-  mid_loop?: number
-  long_loop?: number
+  main_loop?: NodeJS.Timer
+  mid_loop?: NodeJS.Timer
+  long_loop?: NodeJS.Timer
 }
 
 export interface LoopWorkerArguments {
