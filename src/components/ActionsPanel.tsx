@@ -91,10 +91,42 @@ function ActionsPanel({
   return (
     <div className={clsx('flex h-full flex-col overflow-hidden', className)}>
       <PanelTitle>Actions</PanelTitle>
-      <div className='grid flex-1 grid-cols-1 content-start gap-2 overflow-y-auto p-2 md:order-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-        {tabs[currentTab].content}
+      <div className='flex flex-1 flex-col gap-2 overflow-y-auto p-2 md:order-3'>
+        {actions.map(({ id, title, description, disabled, action, cost }) => (
+          <ActionButton
+            key={id}
+            title={title}
+            description={description}
+            disabled={disabled}
+            cost={cost}
+            action={action}
+          />
+        ))}
+        {buildings.map(
+          ({
+            id,
+            title,
+            description,
+            effectDescription,
+            amount,
+            disabled,
+            action,
+            cost,
+          }) => (
+            <ActionButton
+              key={id}
+              title={title}
+              description={description}
+              effectDescription={effectDescription}
+              amount={amount}
+              disabled={disabled}
+              cost={cost}
+              action={action}
+            />
+          )
+        )}
       </div>
-      <div className='safe-bottom flex flex-row justify-around bg-gray-200 p-2 md:order-2 md:justify-start md:gap-4 md:bg-transparent'>
+      {/* <div className='safe-bottom flex flex-row justify-around bg-gray-200 p-2 md:order-2 md:justify-start md:gap-4 md:bg-transparent'>
         {(Object.entries(tabs) as [TabIds, Tab][]).map(
           ([id, { title, icon }]) => (
             <button
@@ -113,7 +145,7 @@ function ActionsPanel({
             </button>
           )
         )}
-      </div>
+      </div> */}
     </div>
   )
 }

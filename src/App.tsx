@@ -16,9 +16,9 @@ function App() {
         {/* <MessagesPanel className='md:order-3' /> */}
         <ResourcesPanel resources={game.resources} />
         <ActionsPanel actions={game.actions} buildings={game.buildings} />
-        <div className='hidden w-80 overflow-auto md:block'>
+        {/* <div className='hidden w-80 overflow-auto md:block'>
           <pre>{JSON.stringify(game.state, null, 2)}</pre>
-        </div>
+        </div> */}
       </div>
     </Tooltip.Provider>
   )
