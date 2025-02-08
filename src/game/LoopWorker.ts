@@ -1,11 +1,11 @@
-import { type LoopIntervals, type LoopWorkerArguments } from './GameLoopManager'
+import { type LoopIntervals, type LoopWorkerArguments } from './GameLoopManager.ts'
 
 const intervals: LoopIntervals = {}
 
 self.addEventListener(
   'message',
   function (e) {
-    var data: LoopWorkerArguments = e.data
+    const data: LoopWorkerArguments = e.data
     switch (data.loop) {
       case 'short':
         intervals['main_loop'] = setInterval(function () {

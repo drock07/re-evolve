@@ -1,4 +1,4 @@
-import clsx from 'clsx'
+import { clsx } from '@nick/clsx'
 
 function PanelTitle({
   children,

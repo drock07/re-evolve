@@ -1,10 +1,10 @@
 import { immerable } from 'immer'
-import Stage from '../types/Stages'
-import Resource from '../types/Resources'
-import { BuildingIds } from '../Buildings'
-import { ActionIds } from '../Actions'
-import ResourceState from './ResourceState'
-import BuildingState from './BuildingState'
+import Stage from '../types/Stages.ts'
+import Resource from '../types/Resources.ts'
+import { BuildingIds } from '../Buildings.ts'
+import { ActionIds } from '../Actions.ts'
+import ResourceState from './ResourceState.ts'
+import BuildingState from './BuildingState.ts'
 
 export default class GameState {
   [immerable] = true

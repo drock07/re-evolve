@@ -1,5 +1,5 @@
-import clsx from 'clsx'
-import PanelTitle from './PanelTitle'
+import {clsx} from '@nick/clsx'
+import PanelTitle from './PanelTitle.tsx'
 
 function MessagesPanel({ className }: { className?: string }) {
   return (

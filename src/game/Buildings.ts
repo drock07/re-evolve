@@ -1,6 +1,6 @@
-import GameState from './GameState'
-import AmountCalculator from './types/AmountCalculator'
-import Resource from './types/Resources'
+import GameState from './GameState/index.ts'
+import AmountCalculator from './types/AmountCalculator.ts'
+import Resource from './types/Resources.ts'
 
 export enum BuildingIds {
   MEMBRANE = 'membrane',

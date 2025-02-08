@@ -1,15 +1,14 @@
 import { useState } from 'react'
-import clsx from 'clsx'
-import { GiInfo } from 'react-icons/gi'
+// import {clsx} from '@nick/clsx'
+// import { GiInfo } from 'react-icons/gi'
 import { HiChevronDown } from 'react-icons/hi'
 import * as Collapsible from '@radix-ui/react-collapsible'
-import * as Tooltip from '@radix-ui/react-tooltip'
-import { useMediaQuery } from '@react-hookz/web'
+// import * as Tooltip from '@radix-ui/react-tooltip'
+// import { useMediaQuery } from '@react-hookz/web'
 
 function ActionButton({
   title,
   description,
-  effectDescription,
   amount,
   cost,
   disabled,
@@ -36,7 +35,7 @@ function ActionButton({
           type='button'
           title={`Toggle ${title} open/closed`}
           className='flex w-full flex-row items-center p-2 pb-0'
-          onClick={() => setIsDetailsOpen((s) => !s)}
+          onClick={() => setIsDetailsOpen((s: boolean) => !s)}
         >
           <HiChevronDown className='mr-1 text-xl' /> {title}
           <span className='ml-auto'>

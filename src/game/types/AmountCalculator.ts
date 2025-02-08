@@ -1,4 +1,4 @@
-import GameState from '../GameState'
+import GameState from '../GameState/index.ts'
 
 type AmountCalculator = number | ((state: GameState) => number)
 

@@ -1,8 +1,8 @@
 type Loop = 'short' | 'mid' | 'long'
 export interface LoopIntervals {
-  main_loop?: NodeJS.Timer
-  mid_loop?: NodeJS.Timer
-  long_loop?: NodeJS.Timer
+  main_loop?: number
+  mid_loop?: number
+  long_loop?: number
 }
 
 export interface LoopWorkerArguments {
@@ -44,7 +44,7 @@ export default class GameLoopManager {
 
   constructor(options?: GameLoopOptions) {
     this.options = { ...defaultOptions, ...options }
-    if (window.Worker && !this.webWorker && !this.options.disableWorker) {
+    if (Worker && !this.webWorker && !this.options.disableWorker) {
       this.webWorker = new Worker(new URL('./LoopWorker.ts', import.meta.url))
       this.webWorker.addEventListener('message', ({ data }: { data: Loop }) => {
         switch (data) {

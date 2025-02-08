@@ -1,9 +1,16 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import tsconfigPaths from 'vite-tsconfig-paths'
+import deno from "@deno/vite-plugin"
+import tailwindcss from '@tailwindcss/vite'
+
+import "react"
+import "react-dom"
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [tsconfigPaths(), react()],
+  plugins: [react(), deno(), tailwindcss()],
+  optimizeDeps: {
+    include: ["react/jsx-runtime"]
+  },
   base: '/re-evolve/',
 })

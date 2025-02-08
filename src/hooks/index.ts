@@ -1,2 +1,2 @@
-export { default as useGame } from './useGame'
-export * from './useBreakpoint'
+export { default as useGame } from './useGame.ts'
+export * from './useBreakpoint.ts'

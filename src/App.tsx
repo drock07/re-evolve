@@ -1,7 +1,7 @@
-import { useGame } from './hooks'
-import ResourcesPanel from './components/ResourcesPanel'
-import ActionsPanel from './components/ActionsPanel'
-import MessagesPanel from './components/MessagesPanel'
+import { useGame } from './hooks/index.ts'
+import ResourcesPanel from './components/ResourcesPanel.tsx'
+import ActionsPanel from './components/ActionsPanel.tsx'
+// import MessagesPanel from './components/MessagesPanel.tsx'
 import * as Tooltip from '@radix-ui/react-tooltip'
 
 function App() {

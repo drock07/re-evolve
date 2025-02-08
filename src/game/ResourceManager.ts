@@ -1,8 +1,8 @@
-import Buildings, { BuildingIds } from './Buildings'
-import GameState from './GameState'
-import ResourceState from './GameState/ResourceState'
-import Resources from './types/Resources'
-import ResourceView from './types/ResourceView'
+import Buildings from './Buildings.ts'
+import GameState from './GameState/index.ts'
+import ResourceState from './GameState/ResourceState.ts'
+import Resources from './types/Resources.ts'
+import ResourceView from './types/ResourceView.ts'
 
 export default class ResourceManager {
   public enable(state: GameState, resource: Resources): void {

@@ -1,5 +1,5 @@
 import { immerable } from 'immer'
-import { BuildingIds } from '../Buildings'
+import { BuildingIds } from '../Buildings.ts'
 
 interface Modifier {
   id: BuildingIds

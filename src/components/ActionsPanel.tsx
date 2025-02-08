@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import clsx from 'clsx'
+import { clsx } from '@nick/clsx'
 import { GiStoneAxe, GiHouse, GiMagnifyingGlass } from 'react-icons/gi'
-import ActionView from '~/game/types/ActionView'
-import BuildingView from '~/game/types/BuildingView'
-import ActionButton from './ActionButton'
-import PanelTitle from './PanelTitle'
+import ActionView from '../game/types/ActionView.ts'
+import BuildingView from '../game/types/BuildingView.ts'
+import ActionButton from './ActionButton.tsx'
+import PanelTitle from './PanelTitle.tsx'
 
 enum TabIds {
   Actions = 'actions',

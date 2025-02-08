@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useMemo, useState, useRef } from 'react'
 // import LZString from 'lz-string'
-import Game, { GameLoopManager, GameState } from '~/game'
+import Game, { GameLoopManager, GameState } from '../game/index.ts'
 
 const gameLoop = new GameLoopManager()
 

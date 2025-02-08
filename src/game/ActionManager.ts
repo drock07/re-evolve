@@ -1,6 +1,6 @@
-import GameState from './GameState'
-import actions, { ActionDescription } from './Actions'
-import ActionView from './types/ActionView'
+import GameState from './GameState/index.ts'
+import actions, { ActionDescription } from './Actions.ts'
+import ActionView from './types/ActionView.ts'
 
 export default class ActionManager {
   private canAfford(state: GameState, action: ActionDescription): boolean {

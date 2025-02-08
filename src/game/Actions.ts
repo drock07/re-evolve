@@ -1,5 +1,5 @@
-import AmountCalculator from './types/AmountCalculator'
-import Resources from './types/Resources'
+import AmountCalculator from './types/AmountCalculator.ts'
+import Resources from './types/Resources.ts'
 
 export enum ActionIds {
   RNA = 'rna',

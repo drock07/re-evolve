@@ -1,4 +1,4 @@
-import { BuildingIds } from '../Buildings'
+import { BuildingIds } from '../Buildings.ts'
 
 export default interface ResourceView {
   id: string

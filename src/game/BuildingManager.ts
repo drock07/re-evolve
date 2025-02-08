@@ -1,6 +1,6 @@
-import GameState, { BuildingState } from './GameState'
-import buildings, { BuildingDescription, BuildingIds } from './Buildings'
-import BuildingView from './types/BuildingView'
+import GameState from './GameState/index.ts'
+import buildings, { BuildingDescription, BuildingIds } from './Buildings.ts'
+import BuildingView from './types/BuildingView.ts'
 
 export default class BuildingManager {
   private calculateCost(
@@ -32,7 +32,7 @@ export default class BuildingManager {
   ): BuildingView[] {
     const filteredBuildings: BuildingView[] = []
 
-    for (let id in buildings) {
+    for (const id in buildings) {
       const buildingId = id as BuildingIds
       const building = buildings[buildingId]
       const buildingState = state.buildings[buildingId]

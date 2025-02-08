@@ -1,13 +1,12 @@
-// import { produce } from 'immer'
-import produce from 'immer'
-import ActionManager from './ActionManager'
-import { ActionIds } from './Actions'
-import BuildingManager from './BuildingManager'
-import { BuildingIds } from './Buildings'
-import GameLoopManager from './GameLoopManager'
-import GameState from './GameState/GameState'
-import ResourceManager from './ResourceManager'
-import Resource from './types/Resources'
+import { produce } from 'immer'
+import ActionManager from './ActionManager.ts'
+import { ActionIds } from './Actions.ts'
+import BuildingManager from './BuildingManager.ts'
+// import { BuildingIds } from './Buildings.ts'
+import GameLoopManager from './GameLoopManager.ts'
+import GameState from './GameState/GameState.ts'
+import ResourceManager from './ResourceManager.ts'
+import Resource from './types/Resources.ts'
 
 type StateChangeCallback = (state: GameState) => void
 
@@ -32,7 +31,7 @@ export default class Game {
     if (importString) {
       this._state = new GameState()
     } else {
-      var s = new GameState()
+      const s = new GameState()
       this.resourceManager.enable(s, Resource.RNA)
       this.resourceManager.enable(s, Resource.DNA)
       s.actions.push(ActionIds.RNA)
@@ -42,15 +41,14 @@ export default class Game {
   }
 
   public registerGameLoop(loopManager: GameLoopManager): () => void {
-    const game = this
-    function short() {
-      game.fastLoop()
+    const short = () => {
+      this.fastLoop()
     }
-    function mid() {
-      game.midLoop()
+    const mid = () => {
+      this.midLoop()
     }
-    function long() {
-      game.longLoop()
+    const long = () => {
+      this.longLoop()
     }
     loopManager.subscribe('short', short)
     loopManager.subscribe('mid', mid)
@@ -70,7 +68,7 @@ export default class Game {
   }
 
   public unsubscribeToStateChange(callback: StateChangeCallback) {
-    var index = this.stateChangeSubscriptions.findIndex((cb) => cb === callback)
+    const index = this.stateChangeSubscriptions.findIndex((cb) => cb === callback)
     if (index < -1) return
     this.stateChangeSubscriptions = this.stateChangeSubscriptions.splice(
       index,
