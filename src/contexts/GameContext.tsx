@@ -1,11 +1,11 @@
-import { createContext, useContext } from 'react'
-import { useGame } from '~/hooks'
+import React, { createContext, useContext } from 'react'
+import { useGame } from '../hooks/index.ts'
 
 const GameContext = createContext<ReturnType<typeof useGame> | undefined>(
   undefined
 )
 
-function GameContextProvider(props: any) {
+function GameContextProvider(props: React.PropsWithChildren) {
   const ctx = useGame()
   return <GameContext.Provider value={ctx} {...props} />
 }

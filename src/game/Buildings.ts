@@ -82,7 +82,7 @@ const buildings: {
     description: 'Evolve Membranes',
     effectDescription: 'Increases RNA capacity by 5',
     available: (state) => {
-      return (state.resources[Resource.RNA]?.amount ?? 0) >= 10
+      return (state.resources[Resource.RNA]?.amount ?? 0) >= 10 || (state.buildings.membrane?.amount ?? 0) > 0
     },
     cost: [
       {
@@ -110,7 +110,7 @@ const buildings: {
       return `Automatically generate ${rna} RNA`
     },
     available: (state) => {
-      return (state.resources[Resource.DNA]?.amount ?? 0) >= 4
+      return (state.resources[Resource.DNA]?.amount ?? 0) >= 4 || (state.buildings.organelles?.amount ?? 0) > 0
     },
     cost: [
       {
