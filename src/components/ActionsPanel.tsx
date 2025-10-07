@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import clsx from 'clsx'
-import { GiStoneAxe, GiHouse, GiMagnifyingGlass } from 'react-icons/gi'
+import { WrenchScrewdriverIcon, HomeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 import ActionView from '../game/types/ActionView.ts'
 import BuildingView from '../game/types/BuildingView.ts'
 import ActionButton from './ActionButton.tsx'
@@ -34,7 +34,7 @@ function ActionsPanel({
   } = {
     [TabIds.Actions]: {
       title: 'Collect',
-      icon: <GiStoneAxe />,
+      icon: <WrenchScrewdriverIcon className='h-6 w-6' />,
       content: (
         <>
           {actions.map(({ id, title, description, disabled, action, cost }) => (
@@ -52,7 +52,7 @@ function ActionsPanel({
     },
     [TabIds.Buildings]: {
       title: 'Buildings',
-      icon: <GiHouse />,
+      icon: <HomeIcon className='h-6 w-6' />,
       content: (
         <>
           {buildings.map(
@@ -83,7 +83,7 @@ function ActionsPanel({
     },
     [TabIds.Research]: {
       title: 'Research',
-      icon: <GiMagnifyingGlass />,
+      icon: <MagnifyingGlassIcon className='h-6 w-6' />,
       content: <div></div>,
     },
   }
