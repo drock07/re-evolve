@@ -1,15 +1,35 @@
+import { useEffect } from 'react'
 import { useGame } from './hooks/index.ts'
 import ResourcesPanel from './components/ResourcesPanel.tsx'
 import ActionsPanel from './components/ActionsPanel.tsx'
 // import MessagesPanel from './components/MessagesPanel.tsx'
 
 function App() {
-  const game = useGame()
+  const [{ game, isRunning }, { start, stop }] = useGame()
+
+  useEffect(() => {
+    start()
+  }, [start])
 
   return (
     <div className='grid h-full w-full grid-cols-1 grid-rows-[auto_1fr_3fr] divide-y overflow-hidden md:grid-cols-[300px_1fr] md:grid-rows-[auto_1fr] md:gap-x-2'>
-      <header className='bg-gray-200 md:col-span-3'>
-        {game.state.stage}
+      <header className='bg-gray-200 md:col-span-3 flex flex-row'>
+        <span>{game.state.stage}</span>
+
+        <div className='ml-auto'>
+          <button
+            className=''
+            onClick={() => {
+              if (isRunning) {
+                stop()
+              } else {
+                start()
+              }
+            }}
+          >
+            {isRunning ? '⏸' : '▶'}
+          </button>
+        </div>
       </header>
       {/* <MessagesPanel className='md:order-3' /> */}
       <ResourcesPanel resources={game.resources} />

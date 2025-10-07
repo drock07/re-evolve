@@ -1,114 +1,105 @@
-import { produce } from 'immer'
-import ActionManager from './ActionManager.ts'
-import { ActionIds } from './Actions.ts'
-import BuildingManager from './BuildingManager.ts'
+import { produce } from "immer";
+import ActionManager from "./ActionManager.ts";
+import { ActionIds } from "./Actions.ts";
+import BuildingManager from "./BuildingManager.ts";
 // import { BuildingIds } from './Buildings.ts'
-import GameLoopManager from './GameLoopManager.ts'
-import GameState from './GameState/GameState.ts'
-import ResourceManager from './ResourceManager.ts'
-import Resource from './types/Resources.ts'
-
-type StateChangeCallback = (state: GameState) => void
+import GameLoopManager from "./GameLoopManager.ts";
+import GameState from "./GameState/GameState.ts";
+import ResourceManager from "./ResourceManager.ts";
+import Resource from "./types/Resources.ts";
 
 export default class Game {
-  private _state: GameState
+  private _state: GameState;
   public get state(): GameState {
-    return this._state
+    return this._state;
   }
   private set state(newValue: GameState) {
-    this._state = newValue
-    this.stateChangeSubscriptions.forEach((cb) => cb(this._state))
+    this._state = newValue;
+    this.notifyStateChange();
   }
 
-  private timeMultiplier: number = 1
+  private timeMultiplier: number = 1;
 
-  private stateChangeSubscriptions: StateChangeCallback[] = []
-  private resourceManager: ResourceManager = new ResourceManager()
-  private actionManager: ActionManager = new ActionManager()
-  private buildingManager: BuildingManager = new BuildingManager()
+  private stateChangeListeners: Set<() => void> = new Set();
+  private resourceManager: ResourceManager = new ResourceManager();
+  private actionManager: ActionManager = new ActionManager();
+  private buildingManager: BuildingManager = new BuildingManager();
 
   constructor(importString?: string) {
     if (importString) {
-      this._state = new GameState()
+      this._state = new GameState();
     } else {
-      const s = new GameState()
-      this.resourceManager.enable(s, Resource.RNA)
-      this.resourceManager.enable(s, Resource.DNA)
-      s.actions.push(ActionIds.RNA)
-      s.actions.push(ActionIds.DNA)
-      this._state = s
+      const s = new GameState();
+      this.resourceManager.enable(s, Resource.RNA);
+      this.resourceManager.enable(s, Resource.DNA);
+      s.actions.push(ActionIds.RNA);
+      s.actions.push(ActionIds.DNA);
+      this._state = s;
     }
+  }
+
+  private notifyStateChange(): void {
+    this.stateChangeListeners.forEach((listener) => listener());
   }
 
   public registerGameLoop(loopManager: GameLoopManager): () => void {
-    const short = () => {
-      this.fastLoop()
-    }
-    const mid = () => {
-      this.midLoop()
-    }
-    const long = () => {
-      this.longLoop()
-    }
-    loopManager.subscribe('short', short)
-    loopManager.subscribe('mid', mid)
-    loopManager.subscribe('long', long)
+    const unsubShort = loopManager.subscribe("short", () => this.fastLoop());
+    const unsubMid = loopManager.subscribe("mid", () => this.midLoop());
+    const unsubLong = loopManager.subscribe("long", () => this.longLoop());
 
-    this.timeMultiplier = loopManager.options.shortTimer / 1000
+    this.timeMultiplier = loopManager.options.shortTimer / 1000;
 
     return () => {
-      loopManager.unsubscribe('short', short)
-      loopManager.unsubscribe('mid', mid)
-      loopManager.unsubscribe('long', long)
-    }
+      unsubShort();
+      unsubMid();
+      unsubLong();
+    };
   }
 
-  public subscribeToStateChange(callback: StateChangeCallback) {
-    this.stateChangeSubscriptions.push(callback)
-  }
-
-  public unsubscribeToStateChange(callback: StateChangeCallback) {
-    const index = this.stateChangeSubscriptions.findIndex((cb) => cb === callback)
-    if (index < -1) return
-    this.stateChangeSubscriptions = this.stateChangeSubscriptions.splice(
-      index,
-      1
-    )
+  public subscribeToStateChange(listener: () => void): () => void {
+    this.stateChangeListeners.add(listener);
+    return () => this.stateChangeListeners.delete(listener);
   }
 
   public fastLoop(): void {
     this.state = produce(this.state, (draft) => {
-      let resource: Resource
+      let resource: Resource;
       for (resource in draft.resources) {
         if (Object.prototype.hasOwnProperty.call(draft.resources, resource)) {
-          const r = draft.resources[resource]!
-          if (r.amount < r.max) {
-            r.amount += r.rate * this.timeMultiplier
+          const r = draft.resources[resource]!;
+          if (r.rate !== 0) {
+            r.amount += r.rate * this.timeMultiplier;
+            // Clamp to valid range
+            r.amount = Math.max(0, Math.min(r.amount, r.max));
           }
         }
       }
-    })
+    });
   }
   public midLoop(): void {}
   public longLoop(): void {}
 
   public get resources() {
-    return this.resourceManager.getEnabledResources(this.state)
+    return this.resourceManager.getEnabledResources(this.state);
   }
 
   public get actions() {
     return this.actionManager.getEnabledActions(this.state, (editState) => {
       this.state = produce(this.state, (draft) => {
-        editState(draft)
-      })
-    })
+        editState(draft);
+      });
+    });
   }
 
   public get buildings() {
     return this.buildingManager.getEnabledBuildings(this.state, (editState) => {
       this.state = produce(this.state, (draft) => {
-        editState(draft)
-      })
-    })
+        editState(draft);
+      });
+    });
+  }
+
+  public destroy(): void {
+    this.stateChangeListeners.clear();
   }
 }

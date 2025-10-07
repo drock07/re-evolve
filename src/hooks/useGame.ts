@@ -1,60 +1,73 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Game, { GameLoopManager, GameState } from "../game/index.ts";
+import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
+import Game, { GameLoopManager } from "../game/index.ts";
 
-const gameLoop = new GameLoopManager();
+interface GameData {
+  game: Game;
+  isRunning: boolean;
+}
 
-function useGame(): Game {
-  const [game] = useState(() => new Game());
-  const [, setState] = useState<GameState>(game.state);
+interface GameControls {
+  start: () => void;
+  stop: () => void;
+}
 
+function useGame(): [GameData, GameControls] {
+  const gameRef = useRef<Game | null>(null);
+  const gameLoopRef = useRef<GameLoopManager | null>(null);
+  const unregisterRef = useRef<(() => void) | null>(null);
+
+  if (!gameRef.current) {
+    gameRef.current = new Game();
+  }
+  if (!gameLoopRef.current) {
+    gameLoopRef.current = new GameLoopManager();
+  }
+
+  const game = gameRef.current;
+  const gameLoop = gameLoopRef.current;
+
+  // Subscribe to game state changes
+  useSyncExternalStore(
+    useCallback(
+      (onStoreChange) => game.subscribeToStateChange(onStoreChange),
+      [game],
+    ),
+    () => game.state,
+  );
+
+  // Subscribe to gameLoop isRunning state
+  const isRunning = useSyncExternalStore(
+    useCallback(
+      (onStoreChange) => gameLoop.subscribeToStateChange(onStoreChange),
+      [gameLoop],
+    ),
+    () => gameLoop.isRunning,
+  );
+
+  // Register game loop (but don't start it)
   useEffect(() => {
-    game.subscribeToStateChange(setState);
-    return () => game.unsubscribeToStateChange(setState);
-  }, []);
+    unregisterRef.current = game.registerGameLoop(gameLoop);
 
-  useEffect(() => {
-    const unregister = game.registerGameLoop(gameLoop);
+    return () => {
+      gameLoop.stop();
+      unregisterRef.current?.();
+      gameLoop.destroy();
+      game.destroy();
+    };
+  }, [game, gameLoop]);
+
+  const start = useCallback(() => {
     gameLoop.start();
-    return unregister;
-  }, []);
-  // const dispatchCommands = useCallback((commands: Command | Command[]) => {
-  //   dispatch({ type: 'commands', commands })
-  // }, [])
-  // const start = useCallback(() => {
-  //   gameLoop.start()
-  // }, [])
-  // const stop = useCallback(() => {
-  //   gameLoop.stop()
-  // }, [])
-  // const importGame = useCallback((importString: string) => {
-  //   const gameStateString = LZString.decompressFromBase64(importString)
-  //   if (gameStateString === null)
-  //     throw Error('importGame: corrupted import string')
-  //   const gameState = JSON.parse(gameStateString)
-  //   // migrate gameState if previous version
-  //   dispatch({
-  //     type: 'import',
-  //     data: gameState,
-  //   })
-  // }, [])
-  // const exportGame = useCallback(() => {
-  //   return LZString.compressToBase64(JSON.stringify(gameState))
-  // }, [gameState])
-  // const metaMethods = useMemo(
-  //   () => ({
-  //     start,
-  //     stop,
-  //     importGame,
-  //     exportGame,
-  //   }),
-  //   []
-  // )
-  // return [
-  //   gameState,
-  //   // command dispatcher
-  //   metaMethods,
-  // ]
-  return game;
+  }, [gameLoop]);
+
+  const stop = useCallback(() => {
+    gameLoop.stop();
+  }, [gameLoop]);
+
+  const controls: GameControls = { start, stop };
+  const gameData: GameData = { game, isRunning };
+
+  return [gameData, controls];
 }
 
 export default useGame;

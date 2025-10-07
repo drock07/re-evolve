@@ -38,6 +38,7 @@ export default class GameLoopManager {
   private _isRunning: boolean = false;
   private webWorker?: Worker;
   private intervals: LoopIntervals | undefined;
+  private stateChangeListeners: Set<() => void> = new Set();
 
   private subscriptions: {
     short: SubscriptionCallback[];
@@ -121,9 +122,19 @@ export default class GameLoopManager {
     return this._isRunning;
   }
 
+  private notifyStateChange(): void {
+    this.stateChangeListeners.forEach((listener) => listener());
+  }
+
+  public subscribeToStateChange(listener: () => void): () => void {
+    this.stateChangeListeners.add(listener);
+    return () => this.stateChangeListeners.delete(listener);
+  }
+
   public start(): void {
     if (this._isRunning) return;
     this._isRunning = true;
+    this.notifyStateChange();
 
     if (this.webWorker) {
       const shortMsg: WorkerMessage = {
@@ -163,6 +174,7 @@ export default class GameLoopManager {
   public stop(): void {
     if (!this._isRunning) return;
     this._isRunning = false;
+    this.notifyStateChange();
 
     if (this.webWorker) {
       const clearMsg: WorkerMessage = { command: "clear" };
