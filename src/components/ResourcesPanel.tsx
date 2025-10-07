@@ -1,4 +1,4 @@
-import { clsx } from '@nick/clsx'
+import clsx from 'clsx'
 import type ResourceView from '../game/types/ResourceView.ts'
 import PanelTitle from './PanelTitle.tsx'
 

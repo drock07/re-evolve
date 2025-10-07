@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { clsx } from '@nick/clsx'
+import clsx from 'clsx'
 import { GiStoneAxe, GiHouse, GiMagnifyingGlass } from 'react-icons/gi'
 import ActionView from '../game/types/ActionView.ts'
 import BuildingView from '../game/types/BuildingView.ts'
