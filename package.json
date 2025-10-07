@@ -10,9 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
-    "@radix-ui/react-collapsible": "^1.0.1",
-    "@radix-ui/react-tooltip": "^1.0.2",
     "@react-hookz/web": "^19.1.0",
     "@react-spring/web": "^9.5.5",
     "clsx": "^2.1.1",

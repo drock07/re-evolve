@@ -1,9 +1,5 @@
-import { useState } from 'react'
-// import {clsx} from '@nick/clsx'
 import { ChevronDownIcon } from '@heroicons/react/24/solid'
-import * as Collapsible from '@radix-ui/react-collapsible'
-// import * as Tooltip from '@radix-ui/react-tooltip'
-// import { useMediaQuery } from '@react-hookz/web'
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 
 function ActionButton({
   title,
@@ -21,57 +17,46 @@ function ActionButton({
   disabled: boolean
   action: () => void
 }) {
-  const [isDetailsOpen, setIsDetailsOpen] = useState(true)
-
   return (
-    <Collapsible.Root
-      open={isDetailsOpen}
-      onOpenChange={setIsDetailsOpen}
-      className='overflow-hidden rounded bg-black/20'
-    >
-      <Collapsible.Trigger asChild>
-        <button
-          type='button'
-          title={`Toggle ${title} open/closed`}
-          className='flex w-full flex-row items-center p-2 pb-0'
-          onClick={() => setIsDetailsOpen((s: boolean) => !s)}
-        >
+    <Disclosure defaultOpen={true}>
+      <div className='overflow-hidden rounded bg-black/20'>
+        <DisclosureButton className='flex w-full flex-row items-center p-2 pb-0'>
           <ChevronDownIcon className='mr-1 h-5 w-5' /> {title}
           <span className='ml-auto'>
             {amount !== undefined ? `x${amount}` : null}
           </span>
-        </button>
-      </Collapsible.Trigger>
-      <Collapsible.Content className='overflow-hidden data-[state=open]:animate-[slideDown_300ms_ease-out] data-[state=closed]:animate-[slideUp_300ms_ease-out]'>
-        <div className='flex flex-col p-2 text-sm md:flex-row'>
-          <div className='flex-1'>{description}</div>
-          <div className='flex-1'>
-            {(cost?.length ?? 0) > 0 && (
-              <>
-                <div className='w-full rounded bg-white/30 p-1 text-xs uppercase'>
-                  COSTS
-                </div>
-                {cost?.map(({ resource, amount }) => (
-                  <div key={resource} className='flex flex-row'>
-                    <div className='flex-1'>{resource}</div>
-                    <div className=''>{amount}</div>
-                    <div></div>
+        </DisclosureButton>
+        <DisclosurePanel className='overflow-hidden transition duration-300 ease-out data-[closed]:-translate-y-2 data-[closed]:opacity-0'>
+          <div className='flex flex-col p-2 text-sm md:flex-row'>
+            <div className='flex-1'>{description}</div>
+            <div className='flex-1'>
+              {(cost?.length ?? 0) > 0 && (
+                <>
+                  <div className='w-full rounded bg-white/30 p-1 text-xs uppercase'>
+                    COSTS
                   </div>
-                ))}
-              </>
-            )}
-            <button
-              type='button'
-              className='float-right cursor-pointer rounded bg-white/30 py-1 px-2 text-xs'
-              onClick={() => action()}
-              disabled={disabled}
-            >
-              Do
-            </button>
+                  {cost?.map(({ resource, amount }) => (
+                    <div key={resource} className='flex flex-row'>
+                      <div className='flex-1'>{resource}</div>
+                      <div className=''>{amount}</div>
+                      <div></div>
+                    </div>
+                  ))}
+                </>
+              )}
+              <button
+                type='button'
+                className='float-right cursor-pointer rounded bg-white/30 py-1 px-2 text-xs'
+                onClick={() => action()}
+                disabled={disabled}
+              >
+                Do
+              </button>
+            </div>
           </div>
-        </div>
-      </Collapsible.Content>
-    </Collapsible.Root>
+        </DisclosurePanel>
+      </div>
+    </Disclosure>
   )
 
   // const isDesktop = useMediaQuery('(min-width: 768px)')
