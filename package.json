@@ -12,15 +12,10 @@
   "dependencies": {
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
-    "@react-hookz/web": "^19.1.0",
-    "@react-spring/web": "^9.5.5",
     "clsx": "^2.1.1",
     "immer": "^10.1.1",
-    "lz-string": "^1.4.4",
-    "pwacompat": "^2.0.17",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.28.0"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.5",

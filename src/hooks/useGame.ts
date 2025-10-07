@@ -1,23 +1,22 @@
-import { useEffect, useCallback, useMemo, useState, useRef } from 'react'
-// import LZString from 'lz-string'
-import Game, { GameLoopManager, GameState } from '../game/index.ts'
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Game, { GameLoopManager, GameState } from "../game/index.ts";
 
-const gameLoop = new GameLoopManager()
+const gameLoop = new GameLoopManager();
 
 function useGame(): Game {
-  const [game] = useState(() => new Game())
-  const [, setState] = useState<GameState>(game.state)
+  const [game] = useState(() => new Game());
+  const [, setState] = useState<GameState>(game.state);
 
   useEffect(() => {
-    game.subscribeToStateChange(setState)
-    return () => game.unsubscribeToStateChange(setState)
-  }, [])
+    game.subscribeToStateChange(setState);
+    return () => game.unsubscribeToStateChange(setState);
+  }, []);
 
   useEffect(() => {
-    const unregister = game.registerGameLoop(gameLoop)
-    gameLoop.start()
-    return unregister
-  }, [])
+    const unregister = game.registerGameLoop(gameLoop);
+    gameLoop.start();
+    return unregister;
+  }, []);
   // const dispatchCommands = useCallback((commands: Command | Command[]) => {
   //   dispatch({ type: 'commands', commands })
   // }, [])
@@ -55,7 +54,7 @@ function useGame(): Game {
   //   // command dispatcher
   //   metaMethods,
   // ]
-  return game
+  return game;
 }
 
-export default useGame
+export default useGame;
